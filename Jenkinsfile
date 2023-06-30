@@ -9,7 +9,7 @@ pipeline {
       stage('checkout') {
            steps {
              
-                git branch: 'master', url: 'https://github.com/Sreekanthtruely/webapp.git'
+                git branch: 'master', url: 'https://github.com/Sreekanthtruely/springboot.git'
              
           }
         }
@@ -24,9 +24,9 @@ pipeline {
   stage('Docker Build and Tag') {
         steps {
               
-                sh 'docker build -t samplewebapp:latest .' 
+                sh 'docker build -t taxi:latest .' 
                 // sh 'docker tag samplewebapp sragro/samplewebapp:latest'
-                sh 'docker tag samplewebapp sragro/samplewebapp:$BUILD_NUMBER'
+                sh 'docker tag taxi sragro/taxi:$BUILD_NUMBER'
                
           }
         }
@@ -36,7 +36,7 @@ pipeline {
          steps {
           withDockerRegistry([ credentialsId: "DockerHub", url: "" ]) {
           // sh  'docker push sragro/samplewebapp:latest'
-          sh  'docker push sragro/samplewebapp:$BUILD_NUMBER' 
+          sh  'docker push sragro/taxi:$BUILD_NUMBER' 
 	}
 	    }
   }
