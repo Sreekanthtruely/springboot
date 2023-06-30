@@ -9,7 +9,7 @@ pipeline {
       stage('checkout') {
            steps {
              
-                git branch: 'master', url: 'https://github.com/Sreekanthtruely/springboot.git'
+                git branch: 'prod', url: 'https://github.com/Sreekanthtruely/springboot.git'
              
           }
         }
