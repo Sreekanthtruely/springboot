@@ -7,4 +7,4 @@ COPY . /taxi
 
 EXPOSE 8081
 
-ENTRYPOINT ["java", "-jar", "springboot.jar"]
+ENTRYPOINT ["java", "-jar", "webapp.jar"]
