@@ -3,7 +3,7 @@ FROM openjdk:11
 LABEL maintainer="Sree"
 WORKDIR /taxi
 
-COPY ./target /taxi
+COPY . /taxi
 
 EXPOSE 8081
 
