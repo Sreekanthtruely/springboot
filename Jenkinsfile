@@ -1,26 +1,44 @@
 pipeline {
-    agent any
-    environment {
-        PATH = "/opt/apache-maven-3.6.3/bin:$PATH"
+    agent {
+    docker {
+      image 'abhishekf5/maven-abhishek-docker-agent:v1'
+      args '--user root -v /var/run/docker.sock:/var/run/docker.sock' // mount Docker socket to access the host's Docker daemon
     }
-    stages {
-        stage("clone code"){
-            steps{
-               git credentialsId: 'git_credentials', url: 'https://github.com/ravdy/hello-world.git'
-            }
+  }
+ stages {
+      stage('checkout') {
+           steps {
+             
+                git branch: 'master', url: 'https://github.com/Sreekanthtruely/webapp.git'
+             
+          }
         }
-        stage("build code"){
-            steps{
-              sh "mvn clean install"
-            }
+	 stage('Execute Maven') {
+           steps {
+             
+                sh 'mvn package'             
+          }
         }
-        stage("deploy"){
-            steps{
-              sshagent(['deploy_user']) {
-                 sh "scp -o StrictHostKeyChecking=no webapp/target/webapp.war ec2-user@13.229.183.126:/opt/apache-tomcat-8.5.55/webapps"
-                 
-                }
-            }
+        
+
+  stage('Docker Build and Tag') {
+        steps {
+              
+                sh 'docker build -t samplewebapp:latest .' 
+                // sh 'docker tag samplewebapp sragro/samplewebapp:latest'
+                sh 'docker tag samplewebapp sragro/samplewebapp:$BUILD_NUMBER'
+               
+          }
         }
-    }
+     
+  stage('Publish image to Docker Hub') {
+          
+         steps {
+          withDockerRegistry([ credentialsId: "DockerHub", url: "" ]) {
+          // sh  'docker push sragro/samplewebapp:latest'
+          sh  'docker push sragro/samplewebapp:$BUILD_NUMBER' 
+	}
+	    }
+  }
+ }
 }
